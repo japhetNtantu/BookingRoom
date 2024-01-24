@@ -45,6 +45,21 @@ def test_login_user_not_exists():
     response = client.post("/auth/login", data={"username": "utilisateur_inconnu@example.com", "password": "mot_de_passe_incorrect"})
     assert response.status_code == 401
     assert "Invalid Credentials" == response.json()["detail"]
+def test_login_missing_username():
+    # connection test with missing username
+    response = client.post("/auth/login", data={"password": "testpassword"})
+    assert response.status_code == 422  # Unprocessable Entity
+
+def test_login_missing_password():
+    # connection test with missing password
+    response = client.post("/auth/login", data={"username": "test_test@example.com"})
+    assert response.status_code == 422  # Unprocessable Entity
+
+def test_login_empty_credentials():
+    # connection test with empty credentials
+    response = client.post("/auth/login", data={"username": "", "password": ""})
+    assert response.status_code == 422  # Unprocessable Entity
+
 
 @pytest.fixture
 def auth_token():
